@@ -1,5 +1,24 @@
 #include <iostream>
 
+template <class T>
+constexpr std::string_view type_name()
+{
+#ifdef __clang__
+    string_view p = __PRETTY_FUNCTION__;
+    return std::string_view(p.data() + 34, p.size() - 34 - 1);
+#elif defined(__GNUC__)
+    std::string_view p = __PRETTY_FUNCTION__;
+#  if __cplusplus < 201402
+    return std::string_view(p.data() + 36, p.size() - 36 - 1);
+#  else
+    return std::string_view(p.data() + 49, p.find(';', 49) - 49);
+#  endif
+#elif defined(_MSC_VER)
+    std::string_view p = __FUNCSIG__;
+    return std::string_view(p.data() + 84, p.size() - 84 - 7);
+#endif
+}
+
 int main() {
     const auto mul = [](const auto x){
         return [x](const auto y){
@@ -32,9 +51,12 @@ int main() {
     std::cout << "x = 42" << std::endl;
     std::cout << "y = 41" << std::endl;
     
-    const auto xmul = mul(x); // _42_mul();
-    
-    std::cout << "xmul(y) = " << xmul(y) << std::endl; // _42_mul(41) = 1722
+    const auto xmul = mul(x); // _x_mul();
+    std::cout << "type_name(mul) = " << type_name<decltype(mul)>() << std::endl;
+    std::cout << "type_name(xmul) = " << type_name<decltype(xmul)>() << std::endl;
+    std::cout << "type_name(half) = " << type_name<decltype(half)>() << std::endl;
+
+    std::cout << "xmul(y) = " << xmul(y) << std::endl; // _x_mul(y) = 1722
     
     const auto Sxyz_1 = S(mul)(half)(x);
     std::cout << "S(mul)(half)(x) = " << Sxyz_1 << std::endl;    
