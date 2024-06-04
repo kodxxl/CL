@@ -75,6 +75,9 @@ int main() {
     if( Ix == SKKx ) std::cout << "Success! : Ix == SKKx" << std::endl;
     if( Iy not_eq SKKx ) std::cout << "Success! : Iy not_eq SKKx" << std::endl;
     
+    std::cout << "type_name(SKKx) = " << type_name<decltype(SKKx)>() << std::endl;
+    std::cout << "type_name(Ix) = " << type_name<decltype(Ix)>() << std::endl;
+    
 
     return 0;
 }
