@@ -51,7 +51,7 @@ int main() {
     std::cout << "x = 42" << std::endl;
     std::cout << "y = 41" << std::endl;
     
-    const auto xmul = mul(x); // _x_mul();
+    const auto xmul = mul(x); // _42_mul();
     std::cout << "type_name(mul) = " << type_name<decltype(mul)>() << std::endl;
     std::cout << "type_name(xmul) = " << type_name<decltype(xmul)>() << std::endl;
     std::cout << "type_name(half) = " << type_name<decltype(half)>() << std::endl;
@@ -65,6 +65,8 @@ int main() {
 
     const auto Sxyz_2 = S(mul)(I(half))(K(x)(3));
     std::cout << "S(mul)(I(half))(K(x)(3)) = " << Sxyz_2 << std::endl;
+    
+    // S(mul)(I(half))(K(x)(3)) = 882
 
     const auto Ix = I(x);
     const auto Iy = I(y);
