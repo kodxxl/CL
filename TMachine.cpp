@@ -1,4 +1,3 @@
-// With guidance of DeepSeek 2025
 #include <iostream>
 #include <utility>
 #include <tuple>
@@ -194,11 +193,11 @@ public:
             
             for (const auto& transition : transitions) {
                 if (transition.Compare(*currentSymbol, currentState)) {
-                    auto [newSymbol, newState, moveLeft] = transition.make(*currentSymbol, currentState);
+                    auto [newSymbol, newState, moveDirection] = transition.make(*currentSymbol, currentState);
                     
                     myTape->setSymbol(head.getPosition(), newSymbol);
                     head.setState(newState);
-                    head.move(moveLeft);
+                    head.move(moveDirection);
                     
                     transitionFound = true;
                     break;
@@ -229,10 +228,13 @@ Symbol createSymbol(int id) {
 
 int main() {
     std::vector<Symbol> initialSymbols;
+    Symbol blank = createSymbol(0);
+    Symbol mark = createSymbol(1);
+    
     for (int i = 0; i < 10; i++) {
-        initialSymbols.push_back(createSymbol(0));
+        initialSymbols.push_back(blank);
     }
-    initialSymbols[5] = createSymbol(1);
+    initialSymbols[5] = mark;
     
     Tape tape(initialSymbols);
     
@@ -242,11 +244,13 @@ int main() {
     State state1 = createState(1);
     State state2 = createState(2);
     
-    Symbol blank = createSymbol(0);
-    Symbol mark = createSymbol(1);
+
     
-    t.addTransition({mark, state0}, {blank, state1, false});
-    t.addTransition({blank, state1}, {mark, state2, true});
+    const bool left = false;
+    const bool right = true;
+    
+    t.addTransition({mark, state0}, {blank, state1, left});
+    t.addTransition({blank, state1}, {mark, state2, right});
     
     std::cout << "Initial tape: ";
     tape.display();
@@ -261,7 +265,7 @@ int main() {
         
         std::vector<Symbol> newSymbols;
         for (int i = 0; i < 8; i++) {
-            newSymbols.push_back(createSymbol(0));
+            newSymbols.push_back(blank);
         }
         Tape newTape(newSymbols);
         
@@ -272,8 +276,8 @@ int main() {
         State state3 = createState(3);
         State state4 = createState(4);
         
-        t.addTransition({blank, state2}, {mark, state3, false});
-        t.addTransition({blank, state3}, {mark, state4, true});
+        t.addTransition({blank, state2}, {mark, state3, left});
+        t.addTransition({blank, state3}, {mark, state4, right});
         
         std::cout << "Second phase initial tape: ";
         newTape.display();
