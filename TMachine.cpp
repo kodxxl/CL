@@ -1,5 +1,3 @@
-// TM With guidance of DeepSeek 09.2025
-
 #include <iostream>
 #include <utility>
 #include <tuple>
@@ -113,7 +111,6 @@ public:
         if (position >= 0 && position < static_cast<int>(tapeSymbols.size())) {
             return &tapeSymbols[position];
         }
-        // Если позиция за пределами ленты, добавляем пустые символы
         while (position >= static_cast<int>(tapeSymbols.size())) {
             tapeSymbols.push_back(Symbol(nullptr));
         }
@@ -125,7 +122,6 @@ public:
     }
     
     void setSymbol(int position, const Symbol& sym) {
-        // Гарантируем, что позиция существует
         if (position >= static_cast<int>(tapeSymbols.size())) {
             tapeSymbols.resize(position + 1, Symbol(nullptr));
         }
@@ -165,7 +161,6 @@ public:
     TM(Tape* tape, int initPointer) : myTape(tape), accepted(false), maxSteps(1000) {
         head.setTape(tape);
         head.setPosition(initPointer);
-        // Устанавливаем начальное состояние
         head.setState(State(reinterpret_cast<void*>(0)));
     }
     
@@ -200,7 +195,6 @@ public:
                 if (transition.Compare(*currentSymbol, currentState)) {
                     auto [newSymbol, newState, moveLeft] = transition.make(*currentSymbol, currentState);
                     
-                    // Применяем переход
                     myTape->setSymbol(head.getPosition(), newSymbol);
                     head.setState(newState);
                     head.move(moveLeft);
@@ -215,7 +209,6 @@ public:
             }
         }
         
-        // Если достигли состояния без переходов, считаем принятым
         accepted = true;
         return myTape;
     }
@@ -225,7 +218,6 @@ public:
     void setMaxSteps(int steps) { maxSteps = steps; }
 };
 
-// Вспомогательные функции для создания состояний и символов
 State createState(int id) {
     return State(reinterpret_cast<void*>(id));
 }
@@ -235,46 +227,37 @@ Symbol createSymbol(int id) {
 }
 
 int main() {
-    // Создаем начальную ленту с некоторыми символами
     std::vector<Symbol> initialSymbols;
     for (int i = 0; i < 10; i++) {
-        initialSymbols.push_back(createSymbol(0)); // Пустые символы
+        initialSymbols.push_back(createSymbol(0));
     }
-    initialSymbols[5] = createSymbol(1); // Помечаем определенную позицию
+    initialSymbols[5] = createSymbol(1);
     
     Tape tape(initialSymbols);
     
     TM t(&tape, 5);
     
-    // Определяем состояния
-    State state0 = createState(0); // Начальное состояние
-    State state1 = createState(1); // Состояние обработки
-    State state2 = createState(2); // Принимающее состояние
+    State state0 = createState(0);
+    State state1 = createState(1);
+    State state2 = createState(2);
     
-    // Определяем символы
     Symbol blank = createSymbol(0);
     Symbol mark = createSymbol(1);
     
-    // Добавляем переходы
-    // Из state0, если видим метку, меняем на пустой, двигаемся вправо, переходим в state1
     t.addTransition({mark, state0}, {blank, state1, false});
-    
-    // Из state1, если видим пустой, меняем на метку, двигаемся влево, переходим в state2 (принять)
     t.addTransition({blank, state1}, {mark, state2, true});
     
-    std::cout << "Начальная лента: ";
+    std::cout << "Initial tape: ";
     tape.display();
     
-    // Запускаем машину Тьюринга
     Tape* result = t.run();
     
-    std::cout << "Финальная лента: ";
+    std::cout << "Final tape: ";
     result->display();
     
     if (t.isAccepted()) {
-        std::cout << "Вход принят!" << std::endl;
+        std::cout << "Input accepted!" << std::endl;
         
-        // Создаем новую ленту для второй фазы
         std::vector<Symbol> newSymbols;
         for (int i = 0; i < 8; i++) {
             newSymbols.push_back(createSymbol(0));
@@ -285,28 +268,26 @@ int main() {
         t.clearTransitions();
         t.setInitialPosition(3);
         
-        // Добавляем новые переходы для второй фазы
         State state3 = createState(3);
         State state4 = createState(4);
         
-        // Простые переходы для демонстрации
         t.addTransition({blank, state2}, {mark, state3, false});
         t.addTransition({blank, state3}, {mark, state4, true});
         
-        std::cout << "Начальная лента второй фазы: ";
+        std::cout << "Second phase initial tape: ";
         newTape.display();
         
         Tape* secondResult = t.run();
         
-        std::cout << "Финальная лента второй фазы: ";
+        std::cout << "Second phase final tape: ";
         secondResult->display();
     }
     
     if (t.isAccepted()) {
-        std::cout << "Финальный результат: Принято" << std::endl;
+        std::cout << "Final result: Accepted" << std::endl;
         return 1;
     } else {
-        std::cout << "Финальный результат: Отклонено" << std::endl;
+        std::cout << "Final result: Rejected" << std::endl;
         return 0;
     }
 }
