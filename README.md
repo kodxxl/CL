@@ -1,2 +1,2 @@
 # CL
-Combinatory logic
+Combinatory logic && Computation Theory
