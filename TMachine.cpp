@@ -1,7 +1,12 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
 #include <iostream>
-#include <tuple>
-#include <pair>
-#include <vector>
 
 class State {
   private:
@@ -92,11 +97,19 @@ class TM {
     bool accepted;
   public:
     TM(Tape* tape, int initPointer) myTape : tape, tapePointer = initPointer { accepted = false; }
+    void setInitialPosition(int poiter)
+    
     void addTransision(pair<Symbol, State>, tuple<Symbol, State, bool>){
         tansisions.push(Transision(pair<Symbol, State>, tuple<Symbol, State, bool>))
     }
-    void setInitialPosition(int poiter)
-    Tape run(Tape Input)
+    void clearTransitions(){
+        tansisions.clear();
+    }
+    void changeTape(Tape newTape){
+        myTape = tape
+    }
+    
+    Tape run()
     {
         // read tape, make work and return outpuitTape
         return outTape;
@@ -107,7 +120,32 @@ class TM {
 int main()
 {
     
-    TM(new Tape(), 7);
-
+    TM t(new Tape(new vector<Symbol> {}), 7);
+    // TM programming
+    t.addTransision(pair<Symbol, State>, tuple<Symbol, State, bool>);
+    t.addTransision(pair<Symbol, State>, tuple<Symbol, State, bool>);
+    t.addTransision(pair<Symbol, State>, tuple<Symbol, State, bool>);
+    t.addTransision(pair<Symbol, State>, tuple<Symbol, State, bool>);
+    t.addTransision(pair<Symbol, State>, tuple<Symbol, State, bool>);
+    t.addTransision(pair<Symbol, State>, tuple<Symbol, State, bool>);
+    //---------------
+    // TM running
+    Tape result = t.run();
+    if(t.isAccepted){
+        t.changeTape(result);
+        t.clearTransitions();
+        t.addTransision(pair<Symbol, State>, tuple<Symbol, State, bool>);
+        t.addTransision(pair<Symbol, State>, tuple<Symbol, State, bool>);
+        t.addTransision(pair<Symbol, State>, tuple<Symbol, State, bool>);
+        t.addTransision(pair<Symbol, State>, tuple<Symbol, State, bool>);
+        t.addTransision(pair<Symbol, State>, tuple<Symbol, State, bool>);
+        t.addTransision(pair<Symbol, State>, tuple<Symbol, State, bool>);
+        
+        t.run();
+    }
+    //---------------
+    // TM result
+    if t.isAccepted() return 1;
+    //---------------
     return 0;
 }
